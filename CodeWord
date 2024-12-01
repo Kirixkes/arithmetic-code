@@ -1,0 +1,32 @@
+from collections import defaultdict
+
+def frequency_table(message):
+    freq = defaultdict(int)
+    for char in message:
+        freq[char] += 1
+    return freq
+
+def create_intervals(freq):
+    total = sum(freq.values())
+    cumulative = {}
+    lower = 0.0
+    for char, count in freq.items():
+        upper = lower + count / total
+        cumulative[char] = (lower, upper)
+        lower = upper
+    return cumulative
+
+def arithmetic_encode(message, intervals):
+    low, high = 0.0, 1.0
+    for char in message:
+        range_ = high - low
+        high = low + range_ * intervals[char][1]
+        low = low + range_ * intervals[char][0]
+    return (low + high) / 2
+
+message = "Алпатов Кирилл Олегович"
+frequency = frequency_table(message)
+intervals = create_intervals(frequency)
+code = arithmetic_encode(message, intervals)
+
+print(f"Код:'{message}': {code:.10f}")
