@@ -1,0 +1,28 @@
+from collections import defaultdict
+
+def frequency_table(message):
+    freq = defaultdict(int)
+    for char in message:
+        freq[char] += 1
+    return freq
+
+def create_letter_intervals(freq):
+    total = sum(freq.values())
+    intervals = {}
+    lower_bound = 0.0
+
+    for letter, count in freq.items():
+        upper_bound = lower_bound + count / total
+        intervals[letter] = (lower_bound, upper_bound)
+        lower_bound = upper_bound
+
+    return intervals
+
+message = "Алпатов Кирилл Олегович"
+
+frequency = frequency_table(message)
+
+letter_intervals = create_letter_intervals(frequency)
+
+for letter, (lower, upper) in letter_intervals.items():
+    print(f"{letter}: ({lower}, {upper})")
