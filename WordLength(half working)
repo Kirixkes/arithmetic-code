@@ -1,0 +1,54 @@
+import math
+from collections import defaultdict
+
+def frequency_table(message):
+    freq = defaultdict(int)
+    for char in message:
+        freq[char] += 1
+    return freq
+
+def create_letter_intervals(freq):
+    total = sum(freq.values())
+    intervals = {}
+    lower_bound = 0.0
+
+    for letter, count in freq.items():
+        upper_bound = lower_bound + count / total
+        intervals[letter] = (lower_bound, upper_bound)
+        lower_bound = upper_bound
+
+    return intervals
+
+def arithmetic_encode(message, probabilities):
+    low, high = 0.0, 1.0
+    cumulative_prob = [0.0]
+
+    for p in probabilities:
+        cumulative_prob.append(cumulative_prob[-1] + p)
+
+    for char in message:
+        index = ord(char) - ord('a')
+
+        range_value = high - low
+        high = low + range_value * cumulative_prob[index + 1]
+        low = low + range_value * cumulative_prob[index]
+
+    code_value = (low + high) / 2
+    code_length = math.ceil(-math.log2(high - low))
+
+    return code_value, code_length
+
+message = "Алпатов Кирилл Олегович"
+
+frequency = frequency_table(message)
+
+letter_intervals = create_letter_intervals(frequency)
+
+for letter, (lower, upper) in letter_intervals.items():
+    message = letter
+    probabilities = [round(upper, 3) - round(lower, 3)]
+    code, length = arithmetic_encode(message, probabilities)
+
+    print(f"Закодированное значение: {code}")
+    print(f"Длина кодового слова: {length}")
+
