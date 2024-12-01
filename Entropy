@@ -1,0 +1,29 @@
+from collections import defaultdict
+import math
+
+
+def frequency_table(message):
+    freq = defaultdict(int)
+    for char in message:
+        freq[char] += 1
+    return freq
+
+
+def calculate_entropy(freq):
+    total = sum(freq.values())
+    entropy = 0.0
+
+    for count in freq.values():
+        probability = count / total
+        if probability > 0:
+            entropy -= probability * math.log2(probability)
+
+    return entropy
+
+message = "Алпатов Кирилл Олегович"
+
+frequency = frequency_table(message)
+
+entropy = calculate_entropy(frequency)
+
+print(f"Энтропия: {entropy:.4f} бит")
